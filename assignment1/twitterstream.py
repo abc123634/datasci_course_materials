@@ -51,6 +51,10 @@ def twitterreq(url, method, parameters):
   return response
 
 def fetchsamples():
+  """if you wish, modify the file to use the twitter search API to search for specific terms. 
+  For example, to search for the term "microsoft", you can pass the following url to the 
+  twitterreq function:https://api.twitter.com/1.1/search/tweets.json?q=microsoft"""
+
   url = "https://stream.twitter.com/1/statuses/sample.json"
   parameters = []
   response = twitterreq(url, "GET", parameters)
