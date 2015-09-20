@@ -1,0 +1,87 @@
+------------problem (c) -------------
+
+SELECT count(*) FROM (
+	SELECT term FROM FREQUENCY
+	WHERE docid = "10398_txt_earn" AND count = "1"
+
+	UNION
+
+	SELECT term FROM FREQUENCY
+	WHERE docid = "925_txt_trade" AND count = "1"
+) x;
+
+
+------------problem (d) -------------
+
+SELECT count(*) FROM (
+	SELECT docid FROM FREQUENCY
+	WHERE  term = "law" 
+
+	UNION
+
+	SELECT docid FROM FREQUENCY
+	WHERE  term = "legal"
+) x;
+
+------------problem (e) -------------
+
+SELECT count(*) FROM (
+	SELECT * FROM FREQUENCY
+	GROUP BY docid
+	HAVING SUM(count) >= 300
+) x;
+
+------------problem (f) -------------
+
+SELECT count(*) FROM (
+	SELECT docid FROM FREQUENCY
+	WHERE term = "transactions"
+
+	INTERSECT
+
+	SELECT docid FROM FREQUENCY
+	WHERE term = "world"
+) x;
+
+------------problem (g) -------------
+
+SELECT sum(a * b) FROM (
+	SELECT A.value as a, B.value as b FROM A, B
+	WHERE A.row_num = "2" AND B.col_num = "3" AND A.col_num = B.row_num
+) x;
+
+------------problem (h) -------------
+
+SELECT sum(a * b) FROM (
+	SELECT term as t1, count as a FROM frequency
+	WHERE docid = "10080_txt_crude"
+) INNER JOIN (
+	SELECT term as t2, count as b FROM frequency
+	WHERE docid = "17035_txt_earn"
+) ON t1 = t2;
+
+------------problem (i) -------------
+--Step 1: build query with corpus as a view for convenience
+
+CREATE VIEW corpus_with_query AS
+SELECT * FROM frequency
+UNION
+SELECT 'q' as docid, 'washington' as term, 1 as count 
+UNION
+SELECT 'q' as docid, 'taxes' as term, 1 as count
+UNION 
+SELECT 'q' as docid, 'treasury' as term, 1 as count;
+
+--Step 2: Compute similarity between document and query
+
+
+
+
+
+SELECT sum(a * b) FROM (
+	SELECT term as t1, count as a FROM corpus_with_query
+	WHERE docid = "q"
+) INNER JOIN (
+	SELECT term as t2, count as b FROM corpus_with_query
+	WHERE docid = "1197_txt_trade"
+) ON t1 = t2;
