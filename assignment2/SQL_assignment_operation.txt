@@ -75,13 +75,15 @@ SELECT 'q' as docid, 'treasury' as term, 1 as count;
 --Step 2: Compute similarity between document and query
 
 
-
-
-
-SELECT sum(a * b) FROM (
-	SELECT term as t1, count as a FROM corpus_with_query
-	WHERE docid = "q"
-) INNER JOIN (
-	SELECT term as t2, count as b FROM corpus_with_query
-	WHERE docid = "1197_txt_trade"
-) ON t1 = t2;
+SELECT docid, sum(a * b) FROM (
+	SELECT * FROM (
+		SELECT term as t1, count as a FROM corpus_with_query
+		WHERE docid = "q"
+	) INNER JOIN (
+		SELECT docid, term as t2, count as b FROM corpus_with_query
+		WHERE docid != "q"
+	) ON t1 = t2
+)
+GROUP BY docid
+HAVING sum(a * b)
+ORDER BY sum(a * b) DESC;

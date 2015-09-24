@@ -22,5 +22,7 @@ class MapReduce:
 
         #jenc = json.JSONEncoder(encoding='latin-1')
         jenc = json.JSONEncoder()
+
+        self.result.sort() #shuffle and sort!
         for item in self.result:
             print jenc.encode(item)

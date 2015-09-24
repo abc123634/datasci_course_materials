@@ -123,25 +123,9 @@ def compute_sentiment(tweets_dict, sentiment_dict):
 
     return sentiment_score
 
-
-def main():
-    sentiment_file_name = sys.argv[1]
-    tweet_file_name     = sys.argv[2]
-    
-    sentiment_dict = build_sentiment_dict(sentiment_file_name) #(k,v) = (term, sentiment score)
-    tweets_dict    = build_tweets_dict(tweet_file_name) #(k,v) = (tweet id, tweet)
-    
-    sentiment_score = compute_sentiment(tweets_dict, sentiment_dict) #(k,v) = (tweet id, sentiment score)
-
-    non_senti_term_dic  = {} #(k, v) = (non sentiment carrying term, sentiment score)
-    term_occur_in_tweet = {} #(k, v) = (non sentiment carrying term, list of index of tweet where term t
-                                # appear)
-    
-
-    # for tweet_id in sentiment_score:
-    #     print tweet_id, sentiment_score[tweet_id]
-
+def build_inverted_index_non_senti(tweets_dict):
     # build inverted index list for every non sentiment carrying term
+    term_occur_in_tweet = {}
     for tweet_id, tweet in tweets_dict.items():
         terms = get_terms_from_tweet(tweet)
         for term in terms:
@@ -151,6 +135,23 @@ def main():
                 term_occur_in_tweet[term] = [tweet_id]
             else: 
                 term_occur_in_tweet[term].append(tweet_id)
+    return term_occur_in_tweet
+
+def main():
+    sentiment_file_name = sys.argv[1]
+    tweet_file_name     = sys.argv[2]
+    
+    sentiment_dict = build_sentiment_dict(sentiment_file_name) #(k,v) = (sentiment term, sentiment score)
+    tweets_dict    = build_tweets_dict(tweet_file_name) #(k,v) = (tweet id, tweet)
+    
+    sentiment_score = compute_sentiment(tweets_dict, sentiment_dict) #(k,v) = (tweet id, sentiment score)
+
+    non_senti_term_dic  = {} #(k, v) = (non sentiment carrying term, sentiment score)
+     
+    term_occur_in_tweet = build_inverted_index_non_senti(tweets_dict)
+    #(k, v) = (non sentiment carrying term, list of index of tweet where term t appear)
+
+    
 
     # coumpute sentiment score - method 1
     for term, index_list in term_occur_in_tweet.items():
